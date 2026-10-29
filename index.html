@@ -1,0 +1,393 @@
+<!doctype html>
+<html lang="hu">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'; form-action 'none'; base-uri 'none'; object-src 'none'">
+  <title>WireLogic · Projektindító adatlap</title>
+  <style>
+    :root { --ink:#182d3c; --muted:#526775; --line:#dbe4e8; --paper:#fff; --page:#f3f6f7; --navy:#173b4b; --accent:#087e80; --tint:#eaf6f3; --error:#a12626; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; scroll-padding-top:24px; }
+    body { margin:0; background:var(--page); color:var(--ink); font:16px/1.55 "Segoe UI",system-ui,-apple-system,sans-serif; }
+    button,input,select,textarea { font:inherit; }
+    button,a,input,select,textarea { -webkit-tap-highlight-color:transparent; }
+    a { color:inherit; }
+    [hidden] { display:none !important; }
+    .skip { position:absolute; left:12px; top:-100px; padding:10px; background:white; z-index:10; }
+    .skip:focus { top:10px; }
+    .masthead { background:var(--navy); color:#fff; }
+    .masthead-inner { max-width:1192px; margin:auto; min-height:76px; padding:18px 28px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+    .brand { display:flex; align-items:center; gap:11px; font-size:23px; font-weight:650; letter-spacing:-.7px; }
+    .brand svg { color:#62ddd0; flex:none; }
+    .version { border:1px solid #52717d; border-radius:30px; padding:5px 13px; font-size:13px; white-space:nowrap; }
+    .page { max-width:1192px; padding:40px 28px 30px; margin:auto; }
+    .hero { margin-bottom:30px; }
+    .eyebrow { color:var(--accent); font-weight:650; font-size:13px; letter-spacing:1.6px; text-transform:uppercase; margin:0 0 8px; }
+    h1 { font-size:clamp(29px,4vw,42px); line-height:1.16; letter-spacing:-1.2px; margin:0 0 15px; font-weight:650; }
+    .hero p:last-child { max-width:700px; color:var(--muted); margin:0; }
+    .layout { display:grid; grid-template-columns:218px minmax(0,1fr); gap:28px; align-items:start; }
+    .sidebar { position:sticky; top:24px; }
+    .sidebar-title { font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:1.3px; color:var(--muted); margin:0 0 14px; }
+    .section-nav { display:grid; gap:3px; }
+    .section-nav a { display:flex; align-items:baseline; gap:11px; text-decoration:none; border-radius:7px; padding:9px 8px; font-size:14px; }
+    .section-nav a:hover,.section-nav a:focus-visible { color:var(--accent); background:#e5efee; }
+    .section-nav span { font-size:11px; color:var(--accent); font-weight:700; flex:none; }
+    .save-card { border-top:1px solid var(--line); margin-top:23px; padding-top:22px; }
+    .save-card p { font-size:13px; color:var(--muted); margin:12px 0 0; }
+    .button { border:0; background:var(--accent); color:white; border-radius:8px; padding:13px 21px; font-weight:650; cursor:pointer; min-height:48px; display:inline-flex; justify-content:center; align-items:center; gap:9px; }
+    .button:hover { background:#066b6d; }
+    .save-card .button { width:100%; }
+    .button svg { width:18px; height:18px; }
+    .intro-note { border:1px solid #cadfd9; background:var(--tint); padding:16px 19px; border-radius:10px; font-size:14px; margin-bottom:20px; }
+    .intro-note strong { display:block; margin-bottom:3px; }
+    .intro-note p { margin:0; color:#375b57; }
+    .required-note { color:var(--muted); font-size:13px; margin:0 0 18px; }
+    .card { background:var(--paper); border:1px solid var(--line); border-radius:12px; margin:0 0 20px; padding:26px; scroll-margin-top:24px; box-shadow:0 2px 3px #173b4b03; }
+    .card-head { display:flex; align-items:center; gap:12px; margin-bottom:23px; }
+    .number { display:grid; place-items:center; flex:none; color:var(--accent); background:var(--tint); width:35px; height:35px; border-radius:9px; font-size:13px; font-weight:700; }
+    h2 { margin:0; font-size:20px; line-height:1.3; font-weight:650; letter-spacing:-.35px; }
+    .optional { font-size:11px; color:var(--muted); margin-left:auto; white-space:nowrap; background:var(--page); border-radius:15px; padding:3px 9px; }
+    .grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:20px; }
+    .field { min-width:0; }
+    .wide { grid-column:1/-1; }
+    label,.field-label { display:block; font-size:14px; font-weight:600; margin:0 0 7px; }
+    label small { color:var(--muted); font-weight:400; }
+    input:not([type=radio]):not([type=checkbox]),select,textarea { width:100%; min-width:0; border:1px solid #bdcdd5; border-radius:7px; color:var(--ink); background:#fff; padding:10px 12px; min-height:45px; line-height:1.4; }
+    input::placeholder,textarea::placeholder { color:#7a8a94; opacity:1; }
+    textarea { min-height:87px; resize:vertical; }
+    input[type=checkbox],input[type=radio] { accent-color:var(--accent); width:18px; height:18px; flex:none; margin:0; }
+    :focus-visible { outline:3px solid #0c8e8e; outline-offset:3px; }
+    .hint { font-size:12px; color:var(--muted); margin:6px 0 0; font-weight:400; }
+    fieldset { margin:0; padding:0; border:0; min-width:0; }
+    legend { padding:0; }
+    .choice-row { display:flex; flex-wrap:wrap; gap:7px; }
+    .choice { position:relative; display:flex; align-items:center; gap:9px; min-height:44px; margin:0; padding:9px 12px; border:1px solid #bdcdd5; border-radius:7px; font-weight:400; font-size:14px; cursor:pointer; }
+    .choice:has(input:checked) { background:var(--tint); border-color:var(--accent); color:#075f60; }
+    .choice-row .choice { flex:1 1 auto; }
+    .control-choices { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; }
+    .control-choices .choice { padding:13px 12px; }
+    .condition { border-top:1px solid var(--line); margin-top:20px; padding-top:20px; }
+    .condition-title { font-size:14px; font-weight:650; margin:0 0 15px; }
+    .error-banner { border:1px solid #e5b9b9; background:#fff2f1; color:var(--error); padding:14px 18px; margin-bottom:20px; border-radius:9px; }
+    [aria-invalid=true] { border-color:var(--error) !important; }
+    .safety-note { font-size:13px; color:var(--muted); border-left:3px solid #b9d7d1; padding-left:12px; margin:0 0 20px; }
+    .finish { display:flex; align-items:center; justify-content:space-between; gap:20px; padding:4px 0 18px; }
+    .finish p { margin:0; font-size:13px; color:var(--muted); max-width:360px; }
+    .status { background:var(--tint); color:#21554c; border-radius:9px; padding:14px 18px; margin:0 0 18px; }
+    .footer { margin-top:22px; border-top:1px solid var(--line); padding-top:18px; color:var(--muted); font-size:12px; display:flex; justify-content:space-between; gap:10px; }
+    @media(max-width:900px) {
+      .layout { grid-template-columns:1fr; gap:21px; }
+      .sidebar { position:static; }
+      .sidebar-title,.save-card { display:none; }
+      .section-nav { display:flex; flex-wrap:wrap; gap:5px; }
+      .section-nav a { border:1px solid var(--line); background:#fff; padding:7px 10px; font-size:12px; gap:7px; }
+      .hero { margin-bottom:22px; }
+    }
+    @media(max-width:560px) {
+      .masthead-inner { min-height:66px; padding:15px 18px; }
+      .brand { font-size:21px; }
+      .version { font-size:11px; padding:4px 9px; }
+      .page { padding:27px 16px 22px; }
+      .grid { grid-template-columns:1fr; gap:18px; }
+      .card { padding:21px 17px; border-radius:10px; }
+      .card-head { gap:10px; margin-bottom:22px; }
+      h2 { font-size:18px; }
+      .optional { font-size:10px; padding:3px 7px; }
+      .number { width:30px; height:30px; font-size:11px; }
+      .control-choices { grid-template-columns:1fr; }
+      .choice-row .choice { padding:9px; gap:6px; font-size:13px; }
+      input:not([type=radio]):not([type=checkbox]),select,textarea { font-size:16px; }
+      .finish { flex-direction:column-reverse; align-items:stretch; gap:12px; }
+      .finish .button { width:100%; }
+      .finish p { max-width:none; text-align:center; }
+      .footer { flex-direction:column; }
+    }
+    @media(prefers-reduced-motion:reduce) { html { scroll-behavior:auto; } }
+    @media print { .sidebar,.finish,.footer,.error-banner,.status { display:none; } .page { padding:0; } .layout { display:block; } .card { break-inside:avoid; box-shadow:none; } }
+  </style>
+</head>
+<body>
+  <a class="skip" href="#project">Ugrás az adatlaphoz</a>
+  <header class="masthead"><div class="masthead-inner">
+    <div class="brand"><svg width="31" height="29" viewBox="0 0 31 29" fill="none" aria-hidden="true"><path d="M3 5v6l7 13 6-10 5 10 7-13V5M16 3v11" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><circle cx="3" cy="4" r="3" fill="currentColor"/><circle cx="16" cy="3" r="3" fill="currentColor"/><circle cx="28" cy="4" r="3" fill="currentColor"/></svg>WireLogic</div>
+    <span class="version">Projektindító · V0.2</span>
+  </div></header>
+  <main class="page">
+    <div class="hero"><p class="eyebrow">Az első lépés a tervezéshez</p><h1>Indítsuk el a projektet.</h1><p>Néhány alapinformáció segít megérteni az elképzelésedet. Csak azt add meg, amit már tudsz — a műszaki részleteket később is pontosíthatjuk.</p></div>
+    <div class="layout">
+      <aside class="sidebar" aria-label="Az adatlap áttekintése">
+        <p class="sidebar-title">Az adatlap témakörei</p>
+        <nav class="section-nav" aria-label="Kérdéscsoportok">
+          <a href="#project"><span>01</span>Projektadatok</a><a href="#environment"><span>02</span>Helyszíni környezet</a>
+          <a href="#supply"><span>03</span>Villamos betáplálás</a><a href="#cabinets"><span>04</span>Villamos szekrények</a>
+          <a href="#automation"><span>05</span>PLC és automatizálás</a><a href="#communication"><span>06</span>Kommunikáció</a>
+          <a href="#safety"><span>07</span>Biztonsági igények</a><a href="#documentation"><span>08</span>Dokumentáció</a>
+        </nav>
+        <div class="save-card"><button class="button" type="submit" form="intake-form">↓&nbsp; JSON mentése</button><p>A JSON letöltése nem beküldés. A fájlt külön add át a projekt felelősének. A kitöltött mezők mentés után is megmaradnak.</p></div>
+      </aside>
+      <div>
+        <div class="intro-note"><strong>Az adataid ezen az eszközön maradnak.</strong><p>Az adatlap offline is működik, és semmit nem küld el automatikusan. A megadott adatokat a JSON mentése gombbal töltheted le. A JSON letöltése nem jelenti az adatlap beküldését. A fájlt külön kell átadnod a projekt felelősének.</p></div>
+        <noscript><div class="error-banner">A feltételes mezőkhöz és a JSON mentéséhez engedélyezett JavaScript szükséges. Internetkapcsolat nem szükséges.</div></noscript>
+        <p class="required-note">Csak a projekt megnevezése kötelező. A többi kérdésnél az üres vagy „Nem ismert” válasz is megfelelő.</p>
+        <div id="error-summary" class="error-banner" role="alert" hidden>Ellenőrizd a jelzett mezőt. Az adataid nem vesztek el.</div>
+        <form id="intake-form" autocomplete="off" novalidate>
+          <section class="card" id="project" aria-labelledby="project-title">
+            <div class="card-head"><span class="number" aria-hidden="true">01</span><h2 id="project-title">Projektadatok</h2></div>
+            <div class="grid">
+              <div class="field wide"><label for="project-name">Projekt megnevezése <span aria-hidden="true">*</span></label><input id="project-name" name="project_name" required maxlength="160" placeholder="Például: telephelyi vezérlés bővítése"></div>
+              <div class="field"><label for="company">Megrendelő / cég</label><input id="company" name="company" maxlength="160"></div>
+              <div class="field"><label for="site">Telepítési helyszín</label><input id="site" name="site" maxlength="240" placeholder="Település, telephely vagy cím"></div>
+              <div class="field"><label for="contact-name">Kapcsolattartó neve</label><input id="contact-name" name="contact_name" maxlength="160"></div>
+              <div class="field"><label for="phone">Telefonszám</label><input id="phone" name="phone" type="tel" maxlength="60" placeholder="+36 …"></div>
+              <div class="field"><label for="email">E-mail-cím</label><input id="email" name="email" type="email" maxlength="254" placeholder="nev@ceg.hu"></div>
+              <div class="field"><label for="project-profile">A projekt jellege / WireLogic-profil</label><select id="project-profile" name="profile_id"><option value="">Még nincs kiválasztva</option><option value="plc_altalanos">PLC – általános ipari</option><option value="kezi_altalanos">Kézi – általános</option><option value="hutestechnika">Hűtéstechnika</option></select></div>
+              <fieldset class="field wide"><legend class="field-label">Vezérlés típusa</legend><div class="control-choices">
+                <label class="choice"><input type="radio" name="control_type" value="KEZI">Kézi</label>
+                <label class="choice"><input type="radio" name="control_type" value="PLC">PLC</label>
+              </div><p class="hint">Ha még nem eldöntött, üresen hagyható. A PLC-kérdések a PLC választásakor jelennek meg.</p></fieldset>
+            </div>
+          </section>
+          <section class="card" id="environment" aria-labelledby="environment-title">
+            <div class="card-head"><span class="number" aria-hidden="true">02</span><h2 id="environment-title">Helyszíni környezet</h2><span class="optional">Opcionális</span></div>
+            <div class="grid">
+              <div class="field"><label for="installation">A telepítés helye</label><select id="installation" name="installation"><option value="unknown">Nem ismert</option><option value="indoor">Beltér</option><option value="outdoor">Kültér</option><option value="mixed">Beltér és kültér</option></select></div>
+              <div class="field"><label for="industry">A környezet jellege</label><select id="industry" name="industry"><option value="unknown">Nem ismert</option><option value="industrial">Ipari</option><option value="agricultural">Mezőgazdasági</option><option value="other">Egyéb</option></select></div>
+              <fieldset class="field wide"><legend class="field-label">Poros környezet?</legend><div class="choice-row"><label class="choice"><input type="radio" name="dusty" value="yes">Igen</label><label class="choice"><input type="radio" name="dusty" value="no">Nem</label><label class="choice"><input type="radio" name="dusty" value="unknown" checked>Nem ismert</label></div></fieldset>
+              <div class="field"><label for="wet">Nedves vagy rendszeresen mosott környezet?</label><select id="wet" name="wet"><option value="unknown">Nem ismert</option><option value="yes">Igen</option><option value="no">Nem</option></select></div>
+              <div class="field"><label for="explosive">Robbanásveszélyes terület érintett?</label><select id="explosive" name="explosive"><option value="unknown">Nem ismert</option><option value="yes">Igen</option><option value="no">Nem</option></select></div>
+            </div>
+          </section>
+          <section class="card" id="supply" aria-labelledby="supply-title">
+            <div class="card-head"><span class="number" aria-hidden="true">03</span><h2 id="supply-title">Villamos betáplálás</h2><span class="optional">Opcionális</span></div>
+            <div class="grid">
+              <div class="field"><label for="voltage">Rendelkezésre álló feszültség</label><select id="voltage" name="voltage"><option value="unknown">Nem ismert</option><option value="single_phase_230">1×230 V</option><option value="three_phase_400_230">3×400/230 V</option><option value="other">Egyéb</option></select></div>
+              <div class="field"><label for="earthing">Hálózati / érintésvédelmi rendszer</label><select id="earthing" name="earthing"><option value="unknown">Nem ismert</option><option value="TN-C">TN-C</option><option value="TN-S">TN-S</option><option value="TN-C-S">TN-C-S</option><option value="TT">TT</option></select></div>
+              <fieldset class="field wide" id="voltage-extra" hidden disabled><label for="other-voltage">Egyéb feszültség <small>– ha ismert</small></label><input id="other-voltage" name="other_voltage" maxlength="120"></fieldset>
+              <div class="field"><label for="main-fuse">Rendelkezésre álló főbiztosító [A]</label><input id="main-fuse" name="main_fuse" inputmode="decimal" data-number="positive" aria-describedby="fuse-hint" placeholder="Ha nem ismert, hagyd üresen"><p class="hint" id="fuse-hint">Például 63 vagy 125. Számítás vagy becslés nem szükséges.</p></div>
+              <div class="field"><label for="additional-supply">Van aggregátor, UPS vagy napelemes rendszer?</label><select id="additional-supply" name="additional_supply"><option value="unknown">Nem ismert</option><option value="yes">Igen</option><option value="no">Nincs</option></select></div>
+              <fieldset class="field wide" id="energy-extra" hidden disabled><legend class="field-label">Melyik áll rendelkezésre?</legend><div class="choice-row"><label class="choice"><input type="checkbox" name="energy_sources" value="generator">Aggregátor</label><label class="choice"><input type="checkbox" name="energy_sources" value="ups">UPS</label><label class="choice"><input type="checkbox" name="energy_sources" value="solar">Napelem</label></div><p class="hint">Csak az ismert rendszereket jelöld. Üresen is hagyható.</p></fieldset>
+              <div class="field wide"><label for="supply-point">A meglévő betáplálási pont rövid leírása</label><textarea id="supply-point" name="supply_point" maxlength="1000" placeholder="Például: meglévő főelosztó az üzemcsarnokban"></textarea></div>
+            </div>
+          </section>
+          <section class="card" id="cabinets" aria-labelledby="cabinets-title">
+            <div class="card-head"><span class="number" aria-hidden="true">04</span><h2 id="cabinets-title">Villamos szekrények</h2><span class="optional">Opcionális</span></div>
+            <div class="grid">
+              <div class="field"><label for="cabinet-count">Várható szekrényszám [db]</label><input id="cabinet-count" name="cabinet_count" inputmode="numeric" data-number="count" placeholder="Ha még nem ismert, hagyd üresen"></div>
+              <div class="field"><label for="cabinet-mount">Elhelyezés</label><select id="cabinet-mount" name="cabinet_mount"><option value="unknown">Nem ismert</option><option value="wall">Falra szerelt</option><option value="floor">Álló</option></select></div>
+              <div class="field"><label for="cabinet-location">A szekrények környezete</label><select id="cabinet-location" name="cabinet_location"><option value="unknown">Nem ismert</option><option value="indoor">Beltér</option><option value="outdoor">Kültér</option></select></div>
+              <div class="field"><label for="incoming-direction">Betápkábel bevezetése</label><select id="incoming-direction" name="incoming_direction"><option value="unknown">Nem ismert</option><option value="bottom">Alulról</option><option value="top">Felülről</option></select></div>
+              <div class="field"><label for="outgoing-direction">Elmenő kábelek kivezetése</label><select id="outgoing-direction" name="outgoing_direction"><option value="unknown">Nem ismert</option><option value="bottom">Alul</option><option value="top">Felül</option></select></div>
+              <div class="field wide"><p class="hint">A kábelbevezetési irányok az egész projektre vonatkozó előzetes igények.</p></div>
+              <div class="field"><label for="special-cabinet">Speciális szekrénykivitel szükséges?</label><select id="special-cabinet" name="special_cabinet"><option value="unknown">Nem ismert</option><option value="yes">Igen</option><option value="no">Nem</option></select></div>
+              <fieldset class="field" id="cabinet-extra" hidden disabled><label for="special-cabinet-details">Milyen speciális kivitel?</label><input id="special-cabinet-details" name="special_cabinet_details" maxlength="500" placeholder="Rövid leírás, ha már ismert"></fieldset>
+            </div>
+          </section>
+          <section class="card" id="automation" aria-labelledby="automation-title">
+            <div class="card-head"><span class="number" aria-hidden="true">05</span><h2 id="automation-title">PLC és automatizálás</h2><span class="optional">Opcionális</span></div>
+            <p class="hint" id="plc-hint">A PLC-specifikus kérdésekhez válaszd a PLC vezérlést a Projektadatok szakaszban.</p>
+            <fieldset id="plc-extra" class="condition" hidden disabled><legend class="condition-title">PLC és kezelés <span class="hint">– csak ha már ismert</span></legend><div class="grid">
+              <div class="field"><label for="plc-manufacturer">Preferált PLC-gyártó</label><input id="plc-manufacturer" name="plc_manufacturer" maxlength="160" placeholder="Üresen hagyható"></div>
+              <div class="field"><label for="existing-plc">Meglévő PLC-rendszerhez csatlakozik?</label><select id="existing-plc" name="existing_plc"><option value="unknown">Nem ismert</option><option value="yes">Igen</option><option value="no">Nem</option></select></div>
+              <div class="field"><label for="hmi">Érintőképernyős kezelőpanel szükséges?</label><select id="hmi" name="hmi"><option value="unknown">Nem ismert</option><option value="yes">Igen</option><option value="no">Nem</option></select></div>
+              <div class="field"><label for="remote-control">Távoli kezelésre van igény?</label><select id="remote-control" name="remote_control"><option value="unknown">Nem ismert</option><option value="yes">Igen</option><option value="no">Nem</option></select></div>
+              <div class="field"><label for="display-device">Milyen megjelenítőeszköz szükséges?</label><select id="display-device" name="display_device"><option value="unknown">Nem ismert</option><option value="none">Nem szükséges</option><option value="hmi">HMI</option><option value="ipc_10">IPC 10&quot;</option><option value="ipc_15">IPC 15&quot;</option><option value="pc">PC</option></select></div>
+              <div class="field"><label for="plc-data-logging">Szükséges adatnaplózás?</label><select id="plc-data-logging" name="plc_data_logging"><option value="unknown">Nem ismert</option><option value="yes">Igen</option><option value="no">Nem</option></select><p class="hint">A PLC-rendszer adatnaplózási igénye.</p></div>
+            </div></fieldset>
+          </section>
+          <section class="card" id="communication" aria-labelledby="communication-title">
+            <div class="card-head"><span class="number" aria-hidden="true">06</span><h2 id="communication-title">Kommunikáció és távfelügyelet</h2><span class="optional">Opcionális</span></div>
+            <div class="grid">
+              <div class="field"><label for="monitoring">Szükséges távoli megfigyelés?</label><select id="monitoring" name="monitoring"><option value="unknown">Nem ismert</option><option value="yes">Igen</option><option value="no">Nem</option></select></div>
+              <div class="field"><label for="logging">Szükséges üzemi adatok rögzítése?</label><select id="logging" name="logging"><option value="unknown">Nem ismert</option><option value="yes">Igen</option><option value="no">Nem</option></select></div>
+              <div class="field"><label for="equipment-link">Kapcsolódnia kell más berendezéshez?</label><select id="equipment-link" name="equipment_link"><option value="unknown">Nem ismert</option><option value="yes">Igen</option><option value="no">Nem</option></select></div>
+              <div class="field"><label for="internet">Van internetkapcsolat a telephelyen?</label><select id="internet" name="internet"><option value="unknown">Nem ismert</option><option value="yes">Igen</option><option value="no">Nem</option></select></div>
+              <fieldset id="communication-extra" class="field wide" hidden disabled><label for="communication-type">Kommunikáció típusa <small>– opcionális műszaki részlet</small></label><input id="communication-type" name="communication_type" maxlength="300" placeholder="Például: Ethernet, Modbus vagy egy meglévő rendszer neve"><p class="hint">Ha nem ismered, ezt a mezőt nyugodtan hagyd üresen.</p></fieldset>
+            </div>
+          </section>
+          <section class="card" id="safety" aria-labelledby="safety-title">
+            <div class="card-head"><span class="number" aria-hidden="true">07</span><h2 id="safety-title">Biztonsági igények</h2><span class="optional">Opcionális</span></div>
+            <p class="safety-note">Ezek előzetes igények. A megfelelő biztonsági megoldást a tervezés során kell meghatározni.</p>
+            <div class="grid">
+              <div class="field"><label for="emergency-stop">Vészleállítás szükséges?</label><select id="emergency-stop" name="emergency_stop"><option value="unknown">Nem ismert</option><option value="yes">Igen</option><option value="no">Nem</option></select></div>
+              <fieldset id="emergency-placement-extra" class="field"><label for="emergency-placement">Vészleállító nyomógombok elhelyezése</label><select id="emergency-placement" name="emergency_placement"><option value="unknown">Nem ismert</option><option value="cabinet_only">Csak a villamos szekrényen</option><option value="cabinet_and_field">A villamos szekrényen és további helyszíni pontokon</option><option value="not_required_or_undetermined">Nem szükséges / még nincs meghatározva</option></select></fieldset>
+              <fieldset id="emergency-count-extra" class="field wide" hidden disabled><label for="extra-emergency-stops">További helyszíni vészgombok száma [db]</label><input id="extra-emergency-stops" name="extra_emergency_stops" inputmode="numeric" data-number="count" placeholder="Ha még nem ismert, hagyd üresen" aria-describedby="emergency-count-hint"><p class="hint" id="emergency-count-hint">A villamos szekrényen található nyomógombon felüli darabszám. Nulla is megadható.</p></fieldset>
+              <div class="field"><label for="interlocks">Vannak biztonsági reteszelések?</label><select id="interlocks" name="interlocks"><option value="unknown">Nem ismert</option><option value="yes">Igen</option><option value="no">Nem</option></select></div>
+              <div class="field"><label for="fire-link">Tűzjelzőhöz vagy tűzeseti lekapcsoláshoz csatlakozik?</label><select id="fire-link" name="fire_link"><option value="unknown">Nem ismert</option><option value="yes">Igen</option><option value="no">Nem</option></select></div>
+              <div class="field"><label for="special-safety">Vannak különleges biztonsági követelmények?</label><select id="special-safety" name="special_safety"><option value="unknown">Nem ismert</option><option value="yes">Igen</option><option value="no">Nem</option></select></div>
+              <fieldset id="safety-extra" class="field wide" hidden disabled><label for="special-safety-details">A különleges követelmények röviden</label><textarea id="special-safety-details" name="special_safety_details" maxlength="2000"></textarea></fieldset>
+            </div>
+          </section>
+          <section class="card" id="documentation" aria-labelledby="documentation-title">
+            <div class="card-head"><span class="number" aria-hidden="true">08</span><h2 id="documentation-title">Dokumentáció és kivitelezés</h2><span class="optional">Opcionális</span></div>
+            <div class="grid">
+              <div class="field"><label for="electrical-drawings">Van meglévő villamos kapcsolási rajz?</label><select id="electrical-drawings" name="electrical_drawings"><option value="unknown">Nem ismert</option><option value="yes">Igen</option><option value="no">Nincs</option></select></div>
+              <div class="field"><label for="site-drawings">Van helyszínrajz vagy elrendezési terv?</label><select id="site-drawings" name="site_drawings"><option value="unknown">Nem ismert</option><option value="yes">Igen</option><option value="no">Nincs</option></select></div>
+              <div class="field"><label for="contractor-known">Ismert a villamos kivitelező?</label><select id="contractor-known" name="contractor_known"><option value="unknown">Nem ismert</option><option value="yes">Igen</option><option value="no">Még nem</option></select></div>
+              <fieldset id="contractor-extra" class="field" hidden disabled><label for="contractor-name">A kivitelező neve</label><input id="contractor-name" name="contractor_name" maxlength="160"></fieldset>
+              <fieldset id="programming-extra" class="field" hidden disabled><label for="plc-programming">Ki végzi a PLC-programozást?</label><select id="plc-programming" name="plc_programming"><option value="undecided">Még nincs eldöntve</option><option value="designer">A tervező</option><option value="contractor">A kivitelező</option><option value="customer">A megrendelő</option><option value="other">Másik közreműködő</option></select></fieldset>
+              <div class="field wide"><label for="documentation-requirements">Külön dokumentációs követelmények</label><textarea id="documentation-requirements" name="documentation_requirements" maxlength="2000" placeholder="Ha vannak, röviden írd le őket."></textarea></div>
+              <div class="field wide"><label for="notes">Egyéb fontos tudnivalók</label><textarea id="notes" name="notes" maxlength="3000"></textarea></div>
+            </div>
+          </section>
+          <div id="save-status" class="status" role="status" aria-live="polite" hidden></div>
+          <div class="finish"><p>Nincs automatikus mentés. Az adatlap bezárása előtt töltsd le a kitöltött JSON-fájlt.</p><button class="button" type="submit">↓&nbsp; JSON mentése</button></div>
+        </form>
+      </div>
+    </div>
+    <footer class="footer"><span>WireLogic Projektindító V0.2 – tesztverzió</span><span>Helyi kitöltés. Saját letöltés. Automatikus adattovábbítás nélkül.</span></footer>
+  </main>
+  <script>
+    "use strict";
+    (() => {
+      const form = document.getElementById("intake-form");
+      const element = id => document.getElementById(id);
+      const value = id => element(id).value.trim();
+      const text = id => value(id) || null;
+      const radio = name => form.querySelector(`input[name="${name}"]:checked`)?.value || null;
+      const plcRelevant = () => radio("control_type") === "PLC";
+      const communicationRelevant = () => plcRelevant() && (["monitoring", "logging", "equipment-link", "remote-control", "plc-data-logging"].some(id => value(id) === "yes"));
+      const emergencyPlacementRelevant = () => value("emergency-stop") !== "no";
+      const emergencyCountRelevant = () => emergencyPlacementRelevant() && value("emergency-placement") === "cabinet_and_field";
+      const show = (id, visible) => { element(id).hidden = !visible; element(id).disabled = !visible; };
+
+      function updateConditions() {
+        show("plc-extra", plcRelevant());
+        element("plc-hint").hidden = plcRelevant();
+        show("programming-extra", plcRelevant());
+        show("communication-extra", communicationRelevant());
+        show("voltage-extra", value("voltage") === "other");
+        show("energy-extra", value("additional-supply") === "yes");
+        show("cabinet-extra", value("special-cabinet") === "yes");
+        show("safety-extra", value("special-safety") === "yes");
+        show("contractor-extra", value("contractor-known") === "yes");
+        show("emergency-placement-extra", emergencyPlacementRelevant());
+        show("emergency-count-extra", emergencyCountRelevant());
+      }
+
+      function numberValue(input) {
+        const raw = input.value.trim();
+        if (!raw) return null;
+        if (!/^\d+(?:[.,]\d+)?$/.test(raw)) return NaN;
+        const number = Number(raw.replace(",", "."));
+        if (!Number.isFinite(number)) return NaN;
+        if (input.dataset.number === "positive" && number <= 0) return NaN;
+        if (input.dataset.number === "count" && !Number.isSafeInteger(number)) return NaN;
+        return number;
+      }
+
+      function validate() {
+        element("project-name").setCustomValidity(value("project-name") ? "" : "Add meg a projekt megnevezését.");
+        for (const input of form.querySelectorAll("[data-number]")) {
+          input.setCustomValidity(input.willValidate && Number.isNaN(numberValue(input)) ? (input.dataset.number === "count" ? "Nemnegatív egész darabszámot adj meg, vagy hagyd üresen." : "Pozitív számot adj meg, vagy hagyd üresen. Tizedesvessző is használható.") : "");
+        }
+        for (const input of form.querySelectorAll("input,select,textarea")) {
+          if (input.willValidate && !input.validity.valid) input.setAttribute("aria-invalid", "true");
+          else input.removeAttribute("aria-invalid");
+        }
+        return form.checkValidity();
+      }
+
+      function collect(createdAt) {
+        const supply = {
+          voltage: value("voltage"), earthing_system: value("earthing"),
+          main_fuse_a: numberValue(element("main-fuse")), supply_point_description: text("supply-point"),
+          additional_supply: { status: value("additional-supply") }
+        };
+        if (value("voltage") === "other") supply.other_voltage = text("other-voltage");
+        if (value("additional-supply") === "yes") supply.additional_supply.sources = [...form.querySelectorAll('input[name="energy_sources"]:checked')].map(input => input.value);
+        const cabinets = {
+          expected_count: numberValue(element("cabinet-count")), mounting: value("cabinet-mount"),
+          location: value("cabinet-location"), incoming_cable_direction: value("incoming-direction"),
+          outgoing_cable_direction: value("outgoing-direction"),
+          special_enclosure: value("special-cabinet")
+        };
+        if (value("special-cabinet") === "yes") cabinets.special_enclosure_details = text("special-cabinet-details");
+        const automation = {};
+        if (plcRelevant()) automation.plc = {
+          preferred_manufacturer: text("plc-manufacturer"), connect_existing_system: value("existing-plc"),
+          hmi_required: value("hmi"), remote_control_required: value("remote-control"),
+          display_device: value("display-device"), data_logging_required: value("plc-data-logging")
+        };
+        const communication = {
+          remote_monitoring: value("monitoring"), operating_data_logging: value("logging"),
+          connect_other_equipment: value("equipment-link"), internet_available: value("internet")
+        };
+        if (communicationRelevant()) communication.type_details = text("communication-type");
+        const safety = {
+          emergency_stop_required: value("emergency-stop"), safety_interlocks: value("interlocks"),
+          fire_system_connection: value("fire-link"), special_requirements: value("special-safety")
+        };
+        if (emergencyPlacementRelevant()) safety.emergency_stop_placement = value("emergency-placement");
+        if (emergencyCountRelevant()) safety.additional_field_emergency_stop_count = numberValue(element("extra-emergency-stops"));
+        if (value("special-safety") === "yes") safety.special_requirements_details = text("special-safety-details");
+        const documentation = {
+          existing_electrical_drawings: value("electrical-drawings"), site_or_layout_plan: value("site-drawings"),
+          contractor_known: value("contractor-known"), requirements: text("documentation-requirements"), notes: text("notes")
+        };
+        if (value("contractor-known") === "yes") documentation.contractor_name = text("contractor-name");
+        if (plcRelevant()) documentation.plc_programming_by = value("plc-programming");
+        return {
+          format: "wirelogic-project-intake", format_version: 2, created_at: createdAt,
+          data: {
+            project: { name: value("project-name"), customer_company: text("company"), installation_site: text("site"),
+              contact: { name: text("contact-name"), phone: text("phone"), email: text("email") },
+              profile_id: text("project-profile"), control_type: radio("control_type") },
+            site_environment: { installation: value("installation"), industry: value("industry"),
+              dusty: radio("dusty"), wet_or_washed: value("wet"), explosive_area: value("explosive") },
+            electrical_supply: supply, cabinets, automation, communication, safety, documentation
+          }
+        };
+      }
+
+      function filename(projectName, date) {
+        const slug = projectName.normalize("NFD").replace(/[\u0300-\u036f]/g, "").replace(/[^a-zA-Z0-9_-]+/g, "-").replace(/^[-_]+|[-_]+$/g, "").slice(0, 70).replace(/[-_]+$/g, "") || "projekt";
+        return `WireLogic_Projektindito_${slug}_${date.replace(/[:.]/g, "-")}.json`;
+      }
+
+      form.addEventListener("change", updateConditions);
+      form.addEventListener("input", event => {
+        if (event.target.hasAttribute("aria-invalid")) {
+          event.target.setCustomValidity("");
+          event.target.removeAttribute("aria-invalid");
+        }
+        element("save-status").hidden = true;
+      });
+      form.addEventListener("submit", event => {
+        event.preventDefault();
+        element("save-status").hidden = true;
+        updateConditions();
+        if (!validate()) {
+          element("error-summary").textContent = "Ellenőrizd a jelzett mezőt. Az adataid nem vesztek el.";
+          element("error-summary").hidden = false;
+          form.reportValidity();
+          return;
+        }
+        element("error-summary").hidden = true;
+        let url;
+        try {
+          const now = new Date().toISOString();
+          const payload = collect(now);
+          const blob = new Blob([JSON.stringify(payload, null, 2) + "\n"], { type: "application/json;charset=utf-8" });
+          url = URL.createObjectURL(blob);
+          const link = document.createElement("a");
+          link.href = url;
+          link.download = filename(payload.data.project.name, now);
+          document.body.appendChild(link);
+          link.click();
+          link.remove();
+          element("save-status").textContent = "A JSON-fájl letöltése elindult. A kitöltött adatok megmaradtak ezen az oldalon.";
+          element("save-status").hidden = false;
+        } catch {
+          element("error-summary").textContent = "A letöltést nem sikerült elindítani. A kitöltött adatok megmaradtak; próbáld újra egy támogatott böngészőben.";
+          element("error-summary").hidden = false;
+        } finally {
+          if (url) setTimeout(() => URL.revokeObjectURL(url), 5000);
+        }
+      });
+      updateConditions();
+    })();
+  </script>
+</body>
+</html>
